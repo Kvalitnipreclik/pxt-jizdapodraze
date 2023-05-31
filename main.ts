@@ -1,18 +1,27 @@
 
 let whiteLine = 1
-let historie = {
-            Foward: false,
-            Left: false,
-        Right: false 
+class objectos {
+    foward: boolean;
+    left: boolean;
+    right: boolean;
+
+    constructor(b1: boolean, b2: boolean, b3: boolean) {
+        this.foward = b1;
+        this.left = b2;
+        this.right = b3;
+    }
 }
 
+let arr: objectos[] = [];
+
+arr.push(new objectos(false, false, false));
 
 Sensors.SetLightLevel()
-const data:Array<object> = []
-let objekt = {
-    Foward: false,
-     Left: false,
-      Right: false,
+const data:Array<boolean> = []
+let objekt:Object<Boolean> = {
+    foward: false,
+     left: false,
+      right: false,
  }
 let zamek = false
 //kolo 67mm
@@ -45,7 +54,7 @@ if (zamek){
     objekt.Left = Left
     objekt.Right = Right
     
-    historie = data.pop()
+    
     if (!Foward) {
         PCAmotor.MotorRun(PCAmotor.Motors.M1, 100)
         PCAmotor.MotorRun(PCAmotor.Motors.M4, 100)
@@ -54,7 +63,7 @@ if (zamek){
     if (!Right){
         PCAmotor.MotorRun(PCAmotor.Motors.M1, 200)
         PCAmotor.MotorRun(PCAmotor.Motors.M4, 70)
-    }else if (Right && historie.Foward)
+    }else if (Right && data[0].foward)
     if (!Left) {
         PCAmotor.MotorRun(PCAmotor.Motors.M4, 200)
         PCAmotor.MotorRun(PCAmotor.Motors.M1, 70)
