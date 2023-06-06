@@ -21,7 +21,7 @@ bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function(){
 
 
 })
-
+let smerjizdy:number = 1
 let zamek = false
 //kolo 67mm
 
@@ -109,6 +109,9 @@ basic.forever(function () {
 
 //mánévry
 
+
+
+     
       
 
         if  (!Left && !Right && !Foward) {
@@ -150,7 +153,22 @@ function krizovatkaX (){
     }else{
         motory(-0.5, 0)
         basic.pause(50)
-
+        switch (smerjizdy) {
+            case 1:
+                motory(0, 1)
+                basic.pause(50)
+                break;
+            case 2:
+                motory(1, 0)
+                basic.pause(50)
+                break;
+            case 3:
+                motory(0, -1)
+                basic.pause(50)
+                break;
+            default:
+            // code block
+        }
 
 
     }
@@ -159,7 +177,7 @@ function krizovatkaX (){
 function krizovatkaT(){
     switch (orientaceKrizovatkyT) {
         case 1:
-            // code block
+           
             break;
         case 2:
             // code block
@@ -185,3 +203,34 @@ input.onButtonPressed(Button.A, function () {
     }
 
 })
+
+
+//chat gpt
+function calculateMode(objectArray: any[]): [number, number, number] {
+    const countMap: <string, number> = {
+        forward0: 0,
+        forward1: 0,
+        left0: 0,
+        left1: 0,
+        right0: 0,
+        right1: 0,
+    };
+
+    for (const obj of objectArray) {
+        countMap[`forward${obj.forward}`]++;
+        countMap[`left${obj.left}`]++;
+        countMap[`right${obj.right}`]++;
+    }
+
+    let maxCount = 0;
+    let mode: [number, number, number] = [0, 0, 0];
+
+    for (const key in countMap) {
+        if (countMap[key] > maxCount) {
+            maxCount = countMap[key];
+            mode = key.split('').map((value) => parseInt(value, 10)) as [number, number, number];
+        }
+    }
+
+    return mode;
+}
