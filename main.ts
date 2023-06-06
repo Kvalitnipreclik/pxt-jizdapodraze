@@ -8,12 +8,24 @@ const data: Array<any> = [
 
     }
 ]
+bluetooth.startUartService()
 
-let orientaceKrizovatkyT:number
+bluetooth.onBluetoothDisconnected(function(){
+
+    basic.showIcon(IconNames.Sad)
+
+})
+
+bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function(){
+
+
+
+})
+
 let zamek = false
 //kolo 67mm
 
-let speeindwex = 150
+let speeindwex = 130
 let rovne: number
 let zatacky: number
 function motory(rovne:number, zatacky:number ) {
@@ -47,7 +59,7 @@ pins.setPull(pinF, PinPullMode.PullNone)
 pins.setPull(pinL, PinPullMode.PullNone)
 pins.setPull(pinR, PinPullMode.PullNone)
 
-
+let orientaceKrizovatkyT: number
 
 
 
@@ -90,20 +102,23 @@ basic.forever(function () {
                 zatacky = -0.4
             } else if (data[data.length - 1].right === false) {
                 rovne = 1.2
-                zatacky = +0.4
+                zatacky = 0.4
             }
 
         }
 
 //mánévry
+
+      
+
         if  (!Left && !Right && !Foward) {
             krizovatkaX
          
 
         } else if( !Left && !Foward){
-
+            
         } else if (!Right && !Foward) {
-
+            
         }
 
 
@@ -112,7 +127,7 @@ basic.forever(function () {
 
         data.push(objekt)
 
-        if (data.length > 10) {
+        if (data.length > 20) {
             data.shift()
         }
         basic.pause(20)
@@ -131,6 +146,13 @@ function krizovatkaX (){
     if (Foward){
         krizovatkaT()
         orientaceKrizovatkyT = 1
+       
+    }else{
+        motory(-0.5, 0)
+        basic.pause(50)
+
+
+
     }
 }
 
