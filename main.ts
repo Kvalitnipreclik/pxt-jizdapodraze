@@ -55,7 +55,7 @@ pins.setPull(pinR, PinPullMode.PullNone)
 let orientaceKrizovatkyT: number
 
 
-
+// hlavni rozhodovaní
 basic.forever(function () {
     if (zamek) {
         let Foward = (whiteLine ^ pins.digitalReadPin(pinF)) == 0 ? false : true
@@ -67,7 +67,7 @@ basic.forever(function () {
         objekt.left = Left
         objekt.right = Right
 
-
+//krizovatka
         if (!Left && !Right && !Foward) {
             krizovatkaX()
 
@@ -77,6 +77,11 @@ basic.forever(function () {
         } else if (!Right && !Foward) {
 
         }
+        if (!Left && !Right && !Foward){
+
+        }
+
+
 
         if (!Right) {
             rovne = 1
@@ -133,6 +138,12 @@ basic.forever(function () {
 })
 
 
+//zatacka o 90 stupnu
+function zatackaPravehoUhlu(){
+    motory(0, 2)
+    basic.pause(500)
+}
+//krizovatkaX
 function krizovatkaX (){
     
         basic.showIcon(IconNames.Heart)
@@ -140,8 +151,8 @@ function krizovatkaX (){
             case 1:
                 motory(1, 0)
                 basic.pause(200)
-                motory(0, 2)
-                basic.pause(500)
+                zatackaPravehoUhlu()
+                
                 motory(1, 0)
                 basic.pause(500)
                 break;
@@ -160,7 +171,7 @@ function krizovatkaX (){
 
     
 }
-
+//krizovatkaT
 function krizovatkaT(){
     switch (orientaceKrizovatkyT) {
         case 1:
@@ -178,12 +189,12 @@ function krizovatkaT(){
         // code block
     }
 }
-
+//sos tlacitko
 input.onButtonPressed(Button.AB, function () {
     PCAmotor.MotorStopAll()
 
 })
-
+//zamek
 input.onButtonPressed(Button.A, function () {
     if (zamek) {
         zamek = false
@@ -192,8 +203,22 @@ input.onButtonPressed(Button.A, function () {
     }
 
 })
-
-
+// konec cary nebo preruseni
+function bezCary(){
+    let Foward = (whiteLine ^ pins.digitalReadPin(pinF)) == 0 ? false : true
+    let Left = (whiteLine ^ pins.digitalReadPin(pinL)) == 0 ? false : true
+    let Right = (whiteLine ^ pins.digitalReadPin(pinR)) == 0 ? false : true
+    motory(1,0)
+    basic.pause(2000)
+    if (!Left || !Right || !Foward){
+        
+    }else {
+        zatackaPravehoUhlu()
+        zatackaPravehoUhlu()
+        motory(1, 0)
+        basic.pause(2000)
+    }
+}
 //chat gpt
 
 // interface ObjectValues {
