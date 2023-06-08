@@ -8,24 +8,17 @@ const data: Array<any> = [
 
     }
 ]
-bluetooth.startUartService()
-
-bluetooth.onBluetoothDisconnected(function(){
-
-    basic.showIcon(IconNames.Sad)
-
-})
-
-bluetooth.onUartDataReceived(serial.delimiters(Delimiters.NewLine), function(){
 
 
 
-})
+  
+
+let spatnyMotor = 215 / 255
 let smerjizdy:number = 1
 let zamek = false
 //kolo 67mm
 
-let speeindwex = 130
+let speeindwex = 150
 let rovne: number
 let zatacky: number
 function motory(rovne:number, zatacky:number ) {
@@ -38,7 +31,7 @@ function motory(rovne:number, zatacky:number ) {
 
 
     PCAmotor.MotorRun(PCAmotor.Motors.M1, motorM1 * speeindwex)
-    PCAmotor.MotorRun(PCAmotor.Motors.M4, motorM4 * speeindwex)
+    PCAmotor.MotorRun(PCAmotor.Motors.M4, motorM4 * speeindwex * spatnyMotor)
 
 }
 
@@ -75,58 +68,56 @@ basic.forever(function () {
         objekt.right = Right
 
 
-        if (!Foward) {
-            rovne = 1
-            zatacky = 0
+        if (!Left && !Right && !Foward) {
+            krizovatkaX()
+
+
+        } else if (!Left && !Foward) {
+
+        } else if (!Right && !Foward) {
+
         }
 
         if (!Right) {
             rovne = 1
             zatacky = -0.2
-         
+            motory(rovne, zatacky)
         } else if (Right && data[data.length - 1].right === false) {
             rovne = 1
-            zatacky = -0.1
+            zatacky = -0.8
+            motory(rovne, zatacky)
         }
         if (!Left) {
             rovne = 1
             zatacky = 0.2
-        } else if (Right && data[data.length - 1].left === false) {
+            motory(rovne, zatacky)
+        } else if (Left && data[data.length - 1].left === false) {
             rovne = 1
-            zatacky = 0.1
+            zatacky = 0.8
+            motory(rovne, zatacky)
         }
-
         if (Left && Right && Foward) {
             if (data[data.length - 1].left === false) {
                 rovne = 1.2
                 zatacky = -0.4
+                motory(rovne, zatacky)
             } else if (data[data.length - 1].right === false) {
                 rovne = 1.2
                 zatacky = 0.4
+                motory(rovne, zatacky)
             }
-
         }
 
 //mánévry
 
 
 
-     
+        motory(rovne, zatacky)
       
 
-        if  (!Left && !Right && !Foward) {
-            krizovatkaX
-         
-
-        } else if( !Left && !Foward){
-            
-        } else if (!Right && !Foward) {
-            
-        }
 
 
-
-    motory(rovne, zatacky)
+ 
 
         data.push(objekt)
 
@@ -143,20 +134,16 @@ basic.forever(function () {
 
 
 function krizovatkaX (){
-    motory(0.5,0)
-    basic.pause(50)
-    let Foward = (whiteLine ^ pins.digitalReadPin(pinF)) == 0 ? false : true
-    if (Foward){
-        krizovatkaT()
-        orientaceKrizovatkyT = 1
-       
-    }else{
-        motory(-0.5, 0)
-        basic.pause(50)
+    
+        basic.showIcon(IconNames.Heart)
         switch (smerjizdy) {
             case 1:
-                motory(0, 1)
-                basic.pause(50)
+                motory(1, 0)
+                basic.pause(200)
+                motory(0, 2)
+                basic.pause(500)
+                motory(1, 0)
+                basic.pause(500)
                 break;
             case 2:
                 motory(1, 0)
@@ -171,13 +158,15 @@ function krizovatkaX (){
         }
 
 
-    }
+    
 }
 
 function krizovatkaT(){
     switch (orientaceKrizovatkyT) {
         case 1:
-           
+           motory(0, 1)
+           basic.pause(50)
+            motory(1, 0)
             break;
         case 2:
             // code block
@@ -206,31 +195,38 @@ input.onButtonPressed(Button.A, function () {
 
 
 //chat gpt
-function calculateMode(objectArray: any[]): [number, number, number] {
-    const countMap: <string, number> = {
-        forward0: 0,
-        forward1: 0,
-        left0: 0,
-        left1: 0,
-        right0: 0,
-        right1: 0,
-    };
 
-    for (const obj of objectArray) {
-        countMap[`forward${obj.forward}`]++;
-        countMap[`left${obj.left}`]++;
-        countMap[`right${obj.right}`]++;
-    }
+// interface ObjectValues {
+//     forward: 0 | 1;
+//     left: 0 | 1;
+//     right: 0 | 1;
+// }
 
-    let maxCount = 0;
-    let mode: [number, number, number] = [0, 0, 0];
+// function calculateMode(objectArray: Object[]): [number, number, number] {
+//     const countMap:any = {
+//         forward0: 0,
+//         forward1: 0,
+//         left0: 0,
+//         left1: 0,
+//         right0: 0,
+//         right1: 0,
+//     };
 
-    for (const key in countMap) {
-        if (countMap[key] > maxCount) {
-            maxCount = countMap[key];
-            mode = key.split('').map((value) => parseInt(value, 10)) as [number, number, number];
-        }
-    }
+//     for (const obj of objectArray) {
+//         countMap[`forward${obj.forward}`]++;
+//         countMap[`left${obj.left}`]++;
+//         countMap[`right${obj.right}`]++;
+//     }
 
-    return mode;
-}
+//     let maxCount = 0;
+//     let mode: [number, number, number] = [0, 0, 0];
+
+//     for (const key in countMap) {
+//         if (countMap.hasOwnProperty(key) && countMap[key] > maxCount) {
+//             maxCount = countMap[key];
+//             mode = key.split('').map((value) => parseInt(value, 10)) as [number, number, number];
+//         }
+//     }
+
+//     return mode;
+// }
