@@ -1,5 +1,10 @@
 let whiteLine = 1
 
+radio.setFrequencyBand(0)
+radio.setGroup(1)
+radio.setTransmitPower(7)
+
+
 const data: Array<any> = [
     {
         foward: false,
@@ -9,10 +14,20 @@ const data: Array<any> = [
     }
 ]
 
+radio.onReceivedNumber(function(receivedNumber: number) {
+    smerjizdy = receivedNumber
 
+    basic.showLeds(`
+    . . . . .
+    . . . # .
+    # . # . .
+    . # . . .
+    . . . . .
+    `)
+})
 
   
-
+let stranaOtace = 2
 let spatnyMotor = 215 / 255
 let smerjizdy:number = 1
 let zamek = false
@@ -140,7 +155,7 @@ basic.forever(function () {
 
 //zatacka o 90 stupnu
 function zatackaPravehoUhlu(){
-    motory(0, 2)
+    motory(0, stranaOtace)
     basic.pause(500)
 }
 //krizovatkaX
@@ -151,6 +166,7 @@ function krizovatkaX (){
             case 1:
                 motory(1, 0)
                 basic.pause(200)
+                stranaOtace = 2
                 zatackaPravehoUhlu()
                 
                 motory(1, 0)
@@ -158,12 +174,17 @@ function krizovatkaX (){
                 break;
             case 2:
                 motory(1, 0)
-                basic.pause(50)
+                basic.pause(200)
                 break;
             case 3:
-                motory(0, -1)
-                basic.pause(50)
-                break;
+                motory(1, 0)
+                basic.pause(200)
+                stranaOtace = -2
+                zatackaPravehoUhlu()
+
+                motory(1, 0)
+                basic.pause(500)
+                break
             default:
             // code block
         }
@@ -218,6 +239,13 @@ function bezCary(){
         motory(1, 0)
         basic.pause(2000)
     }
+}
+
+
+function prekazka(){
+
+
+    
 }
 //chat gpt
 
