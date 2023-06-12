@@ -81,6 +81,27 @@ basic.forever(function () {
         objekt.foward = Foward
         objekt.left = Left
         objekt.right = Right
+//modus
+let fowardModus = 0
+let rightModus = 0
+let leftModus = 0
+
+
+for(let i = 0; i < data.length - 1; i++){
+    fowardModus = fowardModus + data[i].foward
+    leftModus = leftModus + data[i].left
+    rightModus = rightModus + data[i].right
+
+    if (fowardModus > (data.length - 1) * 0.7) { fowardModus = 1 } else { fowardModus = 0}
+    if (leftModus > (data.length - 1) * 0.7) { leftModus = 1 } else { leftModus = 0 }
+    if (rightModus > (data.length - 1) * 0.7) { rightModus = 1 } else { rightModus = 0 }
+}
+
+
+
+
+
+
 
 //krizovatka
         if (!Left && !Right && !Foward) {
@@ -97,7 +118,7 @@ basic.forever(function () {
         }
 
 
-
+//zatacky
         if (!Right) {
             rovne = 1
             zatacky = -0.2
@@ -125,7 +146,10 @@ basic.forever(function () {
                 rovne = 1.2
                 zatacky = 0.4
                 motory(rovne, zatacky)
+            } else if (data[data.length - 1].foward === false){
+                bezCary()
             }
+
         }
 
 //mánévry
@@ -144,7 +168,7 @@ basic.forever(function () {
         if (data.length > 20) {
             data.shift()
         }
-        basic.pause(20)
+        basic.pause(50)
     }
 
 
