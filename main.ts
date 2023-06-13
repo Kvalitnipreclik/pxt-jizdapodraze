@@ -5,6 +5,14 @@ radio.setGroup(1)
 radio.setTransmitPower(7)
 
 
+
+
+let stranaOtace = 2
+//zatacka o 90 stupnu
+function zatackaPravehoUhlu() {
+    motory(0, stranaOtace)
+    basic.pause(375)
+}
 const data: Array<any> = [
     {
         foward: false,
@@ -126,21 +134,11 @@ basic.forever(function () {
 
 
 
-        } else if (!Left && !Foward) {
-
-        } else if (!Right && !Foward) {
-
         }
         
         if (ultrasonic < 30){
-
-            basic.showLeds(`
-            . . # . .
-            . . # . .
-            . . # . .
-            . . . . .
-            . . # . .
-            `)
+            objetPrekazku()
+           
         }
 
 
@@ -149,7 +147,7 @@ basic.forever(function () {
             rovne = 0
             zatacky = -0.7
             motory(rovne, zatacky)
-        } else if (Right && Foward === false) {
+        } else if (!Right && !Foward) {
             rovne = 0.6
             zatacky = -0.4
             motory(rovne, zatacky)
@@ -158,7 +156,7 @@ basic.forever(function () {
             rovne = 0
             zatacky = 0.7
             motory(rovne, zatacky)
-        } else if (Left && Foward === false) {
+        } else if (!Left && !Foward) {
             rovne = 0.6
             zatacky = 0.4
             motory(rovne, zatacky)
@@ -226,8 +224,41 @@ function ping(trig: DigitalPin, echo: DigitalPin, maxCmDistance = 500): number {
 
 
 function objetPrekazku(){
+    basic.showLeds(`
+            . . # . .
+            . . # . .
+            . . # . .
+            . . . . .
+            . . # . .
+            `)
+    zatackaPravehoUhlu()
+    let ultrasonic = ping(DigitalPin.P2, DigitalPin.P1)
+    if(ultrasonic > 30){
+        stranaOtace = 2
+        manevrObjetiprekazdky()
+        
+    } else{
+        zatackaPravehoUhlu()
+        zatackaPravehoUhlu()
+        stranaOtace = -2
+        manevrObjetiprekazdky()
+    }
 
 
+
+}
+
+function manevrObjetiprekazdky() {
+    motory(1, 0)
+    basic.pause(1500)
+    zatackaPravehoUhlu()
+    motory(1, 0)
+    basic.pause(1500)
+    zatackaPravehoUhlu()
+    motory(1, 0)
+    basic.pause(1500)
+    stranaOtace = stranaOtace * -1
+    zatackaPravehoUhlu()
 
 
 }
@@ -236,14 +267,6 @@ function objetPrekazku(){
 
 
 
-
-
-let stranaOtace = 2
-//zatacka o 90 stupnu
-function zatackaPravehoUhlu() {
-    motory(0, stranaOtace)
-    basic.pause(375)
-}
 //krizovatkaX
 function krizovatkaX() {
 
@@ -279,23 +302,7 @@ function krizovatkaX() {
 
 }
 //krizovatkaT
-function krizovatkaT() {
-    switch (orientaceKrizovatkyT) {
-        case 1:
-            motory(0, 1)
-            basic.pause(50)
-            motory(1, 0)
-            break;
-        case 2:
-            // code block
-            break;
-        case 3:
-            // code block
-            break;
-        default:
-        // code block
-    }
-}
+
 //sos tlacitko
 input.onButtonPressed(Button.AB, function () {
     PCAmotor.MotorStopAll()
@@ -336,8 +343,4 @@ function bezCary() {
 }
 
 
-function prekazka() {
 
-
-
-}
